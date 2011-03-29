@@ -11,3 +11,7 @@
 @import "partials/page";
 @import "partials/form";
 @import "partials/two_col";
+
+.container {
+    @include container;
+}
