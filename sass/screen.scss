@@ -12,43 +12,6 @@
 @import "partials/form";
 @import "partials/two_col";
 
-// Solarized Colors
-$base03:    #002B36;
-$base02:    #073642;
-$base01:    #586E75;
-$base00:    #657B83;
-$base0:     #839496;
-$base1:     #93A1A1;
-$base2:     #EEE8D5;
-$base3:     #FDF6E3;
-$yellow:    #B58900;
-$orange:    #CB4B16;
-$red:       #D30102;
-$magenta:   #D33682;
-$violet:    #6C71C4;
-$blue:      #268BD2;
-$cyan:      #2AA198;
-$green:     #859900;
-
-@mixin rebase($rebase03,$rebase02,$rebase01,$rebase00,$rebase0,$rebase1,$rebase2,$rebase3) 
-{
-    background-color:$rebase03;
-    color:$rebase0;
-    * { color:$rebase0; }
-    h1,h2,h3,h4,h5,h6 { color:$rebase1; border-color: $rebase0; }
-    a, a:active, a:visited { color: $rebase1; }
-}
-@mixin accentize($accent) {
-    a, a:active, a:visited, code.url { color: $accent; }
-    h1,h2,h3,h4,h5,h6 {color:$accent}
-}
-/* light is default mode, so pair with general html definition */
-html, .light { @include rebase($base3,$base2,$base1,$base0,$base00,$base01,$base02,$base03)}
-.dark  { @include rebase($base03,$base02,$base01,$base00,$base0,$base1,$base2,$base3)}
-html * {
-    color-profile: sRGB;
-    rendering-intent: auto;
-}
 
 @mixin heading {
   margin: 0.5em 0em 0.5em 0em;
@@ -57,12 +20,15 @@ html * {
 
 body {
   color: #333;
-  font-family: Georgia;
-  font-size: 1em;
-  //background-color: #ff9;
+  font-size: 1.25em;
+  margin-bottom: 4em;
 }
 
 // basic elements
+a {
+  text-decoration: none;
+}
+
 h1 {
   @include heading;
   font-size: 2em;
@@ -70,7 +36,11 @@ h1 {
 
 h2 {
   @include heading;
-  font-size: 1.5em;
+  font-size: 1.25em;
+}
+
+p {
+  margin-bottom: 2em;
 }
 
 div.highlight {
@@ -91,15 +61,11 @@ div.highlight {
 #site_title {
   @include push(18);
   @include column(6);
-  background-color: $magenta;
+  background-color: #D33682;
   border-radius: 0em 0em 0.4em 0.4em;
 }
 
-.content {
-  @include column(24, true);
-}
-
-#site_title p {
+#site_title a p {
   //font-family: Helvetica;
   font-family: Georgia;
   color: white;
@@ -107,3 +73,8 @@ div.highlight {
   text-align: right;
   @extend h2;
 }
+
+.content {
+  @include column(24, true);
+}
+
