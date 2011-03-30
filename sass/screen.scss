@@ -12,30 +12,34 @@
 @import "partials/form";
 @import "partials/two_col";
 
+// colors
+$magenta: #D33682;
+
 
 @mixin heading {
-  margin: 0.5em 0em 0.5em 0em;
+  margin: 1.0em 0em 0.5em 0em;
   font-family: Helvetica;
 }
 
-html, body {
+html {
   height: 100%;
   margin: 0 0 1px;
   padding: 0;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 
 body {
   color: #333;
   font-size: 1.25em;
-  margin-bottom: 4em;
+  margin-bottom: 4em !important;
   font-family: "minion-pro-1","minion-pro-2";
 }
 
 // basic elements
-a {
+a, a:visited, a:hover {
   text-decoration: none;
+  color: #839496;
 }
 
 h1 {
@@ -48,17 +52,12 @@ h2 {
   font-size: 1.25em;
 }
 
-p {
-  margin-bottom: 2em;
-}
-
 div.highlight {
   margin: 2em 0em 2em 0em;
   padding: 3px 6px 3px 6px;
   border-style: solid;
   border-color: #EEEEEE;
   border-width: 1px;
-  //font-family: Monaco;
   background-color: #EDEDED;
   font-family: monospace;
 }
@@ -70,7 +69,7 @@ div.highlight {
 #site_title {
   @include push(18);
   @include column(6);
-  background-color: #D33682;
+  background-color: $magenta;
   border-radius: 0em 0em 0.4em 0.4em;
 }
 
@@ -83,6 +82,16 @@ div.highlight {
 }
 
 .content {
+  @include column(24, true);
+}
+
+#footer {
+  margin: 4em 0em 4em 0em;
+  padding-top: 1em;
+  border-top: 4px;
+  border-style: solid;
+  border-color: #CCC;
+  text-align: right;
   @include column(24, true);
 }
 
