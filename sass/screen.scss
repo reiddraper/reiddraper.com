@@ -12,25 +12,6 @@
 @import "partials/form";
 @import "partials/two_col";
 
-// Solarized Colors
-$base03:    #002B36;
-$base02:    #073642;
-$base01:    #586E75;
-$base00:    #657B83;
-$base0:     #839496;
-$base1:     #93A1A1;
-$base2:     #EEE8D5;
-$base3:     #FDF6E3;
-$yellow:    #B58900;
-$orange:    #CB4B16;
-$red:       #D30102;
-$magenta:   #D33682;
-$violet:    #6C71C4;
-$blue:      #268BD2;
-$cyan:      #2AA198;
-$green:     #859900;
-
-
 @mixin heading {
   margin: 0.5em 0em 0.5em 0em;
   font-family: Helvetica;
@@ -38,11 +19,15 @@ $green:     #859900;
 
 body {
   color: #333;
-  font-family: Georgia;
-  font-size: 1em;
+  font-size: 1.25em;
+  margin-bottom: 4em;
 }
 
 // basic elements
+a {
+  text-decoration: none;
+}
+
 h1 {
   @include heading;
   font-size: 2em;
@@ -50,7 +35,11 @@ h1 {
 
 h2 {
   @include heading;
-  font-size: 1.5em;
+  font-size: 1.25em;
+}
+
+p {
+  margin-bottom: 2em;
 }
 
 div.highlight {
@@ -71,18 +60,20 @@ div.highlight {
 #site_title {
   @include push(16);
   @include column(8);
-  background-color: $violet;
+  background-color: #D33682;
+  border-radius: 0em 0em 0.4em 0.4em;
+}
+
+#site_title a p {
+  //font-family: Helvetica;
+  font-family: Georgia;
+  color: white;
+  padding: 0.3em 0.75em 0.3em 1em;
+  text-align: right;
+  @extend h2;
 }
 
 .content {
   @include column(24, true);
 }
 
-#site_title p {
-  //font-family: Helvetica;
-  font-family: Georgia;
-  color: white;
-  padding: 0.3em 0.75em 0.3em 1em;
-  text-align: right;
-  @extend h1;
-}

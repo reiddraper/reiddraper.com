@@ -3,7 +3,7 @@ layout: post
 title: Jekyll test
 ---
 
-# Here is a heading
+# Here is an h1 heading
 
 And now some regular text is coming in and it
 will span multiple lines and all that stuff.
@@ -11,10 +11,18 @@ And it just keeps going and going and going and now
 here is even more. Wow, does this post seem to just
 keep going on forever?
 
+
+## Now for a second section
+
+Some thoughts on this code right here...
+
 {% highlight ruby %}
 def hello()
   puts "hello"
 end
+
+## A Third section might be nice
+
 
 {% endhighlight %}
 
