@@ -1,4 +1,4 @@
 pygments: true
-permalink: pretty
+permalink: /:title/
 exclude: [sass, config.rb]
 auto: true
