@@ -21,10 +21,11 @@ def hello()
   puts "hello"
 end
 
+{% endhighlight %}
+
 ## A Third section might be nice
 
 
-{% endhighlight %}
 
 and now for some line numbers
 

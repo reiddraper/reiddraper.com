@@ -18,6 +18,13 @@
   font-family: Helvetica;
 }
 
+html, body {
+  height: 100%;
+  margin: 0 0 1px;
+  padding: 0;
+}
+
+
 body {
   color: #333;
   font-size: 1.25em;
