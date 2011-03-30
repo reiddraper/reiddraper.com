@@ -22,6 +22,7 @@ body {
   color: #333;
   font-size: 1.25em;
   margin-bottom: 4em;
+  font-family: "minion-pro-1","minion-pro-2";
 }
 
 // basic elements
@@ -66,8 +67,7 @@ div.highlight {
 }
 
 #site_title a p {
-  //font-family: Helvetica;
-  font-family: Georgia;
+  font-family: Georgia, sans-serif;
   color: white;
   padding: 0.3em 0.75em 0.3em 1em;
   text-align: right;
