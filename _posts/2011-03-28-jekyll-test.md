@@ -23,7 +23,7 @@ end
 
 {% endhighlight %}
 
-## A Third section might be nice.
+## A Third section might be nice..
 
 
 
