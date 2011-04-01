@@ -13,7 +13,9 @@
 @import "partials/two_col";
 
 // colors
-$magenta: #D33682;
+//$accent: #D33682; // magenta
+//$accent: #ECD078;  // yellow-ish gold
+$accent: #542437; // dark purple
 
 
 @mixin heading {
@@ -69,7 +71,7 @@ div.highlight {
 #site_title {
   @include push(18);
   @include column(6);
-  background-color: $magenta;
+  background-color: $accent;
   border-radius: 0em 0em 0.4em 0.4em;
 }
 
