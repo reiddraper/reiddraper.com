@@ -3,21 +3,20 @@ layout: default
 title: Reid Draper's blog
 ---
 
-<html>
-  <head>
-    <title>
-    my site
-    </title>
-  </head>
- <h1>Blog Posts</h1>
-  <ul class="posts">
-    {% for post in site.posts %}
-      <li>
-        <span class="post_date">
-          {{ post.date | date_to_string }}
-        </span>
-        <a href="{{ post.url }}">{{ post.title }}</a>
-      </li>
-    {% endfor %}
-  </ul>
-</html>
+<h1>Blog Posts</h1>
+
+<ul class="posts">
+  {% for post in site.posts %}
+    <li>
+      <span class="post_date">
+        {{ post.date | date_to_string }}
+      </span>
+      <a href="{{ post.url }}">{{ post.title }}</a>
+    </li>
+  {% endfor %}
+</ul>
+
+<h1>About Me</h1>
+<p>
+  I'm a full-stack developer living in Somerville, MA. I work at <a href="http://the.echonest.com">The Echo Nest</a>, and like brewing coffee, and mixing cocktails.
+</p>
