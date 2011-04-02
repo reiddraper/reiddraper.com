@@ -17,6 +17,9 @@
 //$accent: #ECD078;  // yellow-ish gold
 $accent: #542437; // dark purple
 
+// medium grey
+$grey: #CCC;
+
 
 @mixin heading {
   margin: 1.0em 0em 0.5em 0em;
@@ -41,7 +44,7 @@ body {
 // basic elements
 a, a:visited, a:hover {
   text-decoration: none;
-  color: #839496;
+  color: $accent;
 }
 
 h1 {
@@ -92,7 +95,7 @@ div.highlight {
   padding-top: 1em;
   border-top: 4px;
   border-style: solid;
-  border-color: #CCC;
+  border-color: $grey;
   text-align: right;
   @include column(24, true);
 }
