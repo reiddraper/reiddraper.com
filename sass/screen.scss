@@ -15,7 +15,10 @@
 // colors
 //$accent: #D33682; // magenta
 //$accent: #ECD078;  // yellow-ish gold
-$accent: #542437; // dark purple
+//$accent: #542437; // dark purple
+//$accent: #803753;
+$accent: #53777A;
+//$accent: #F38630; // orange
 
 // medium grey
 $grey: #CCC;
@@ -39,6 +42,7 @@ body {
   font-size: 1.25em;
   margin-bottom: 4em !important;
   font-family: "minion-pro-1","minion-pro-2";
+  background-color: #FBFBFB;
 }
 
 // basic elements
@@ -55,6 +59,15 @@ h1 {
 h2 {
   @include heading;
   font-size: 1.25em;
+}
+
+p {
+  margin: 1em 0em 1em 0em;
+  line-height: 1.4;
+}
+
+code {
+  font-family: monospace !important;
 }
 
 div.highlight {
