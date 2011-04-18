@@ -165,7 +165,13 @@ exec sudo -u $USER sh -c "/usr/local/bin/redis-server \
 
 ### The Recipe
 
-Now it's time to write the actual recipe, edit `cookbooks/redis/recipes/default.rb`
+Now it's time to write the actual recipe. 
+Having little Ruby experience, I'll have to do
+some hand-waving in explaining that the following
+code is both Chef's DSL, and perfectly valid
+Ruby code. This aside, the following should be
+self-explanatory.
+Edit `cookbooks/redis/recipes/default.rb`
 to look like:
 {% highlight ruby %}
 package "build-essential" do
@@ -178,15 +184,21 @@ user node[:redis][:user] do
   shell "/bin/false"
 end
 
+directory node[:redis][:dir] do
+  owner "root"
+  mode "0755"
+  action :create
+end
+
 directory node[:redis][:data_dir] do
   owner "redis"
   mode "0755"
   action :create
 end
 
-directory node[:redis][:dir] do
-  owner "root"
-  mode "0755"
+directory node[:redis][:log_dir] do
+  mode 0755
+  owner node[:redis][:user]
   action :create
 end
 
@@ -229,16 +241,14 @@ template "redis.upstart.conf" do
   notifies :restart, resources(:service => "redis")
 end
 
-directory node[:redis][:log_dir] do
-  mode 0755
-  owner node[:redis][:user]
-  action :create
-end
-
-
 service "redis" do
   action [:enable, :start]
 end
 {% endhighlight %}
+
+The proceeding is run from the top-down. It uses Chef
+[resources](http://wiki.opscode.com/display/chef/Resources)
+to create a user, make directories, download and compile Redis,
+and write out the templates.
 
 ## Testing Our Recipe
