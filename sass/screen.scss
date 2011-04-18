@@ -61,6 +61,11 @@ h2 {
   font-size: 1.25em;
 }
 
+h3 {
+  @include heading;
+  font-size: 1.05em;
+}
+
 p {
   margin: 1.5em 0em 0.5em 0em;
   line-height: 1.4;
