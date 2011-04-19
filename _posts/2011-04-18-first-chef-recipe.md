@@ -285,7 +285,6 @@ When you're done working, run `vagrant destroy` to reclaim your RAM.
 
 ## Closing Thoughts
 
-There are many parts of Chef that I've glossed over, or neglected entirely.
 Chef is much more powerful than what I've presented, but I hope I've been
 able to show how easy it is to get started writing and editing recipes.
 If you'd like to learn more about Chef, check out the
