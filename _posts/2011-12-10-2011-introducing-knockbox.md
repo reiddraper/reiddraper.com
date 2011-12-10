@@ -78,4 +78,13 @@ or clone the knockbox repository and type `lein repl`.
 
 (println (knockbox.core/resolve [a b c d]))
 ; => #{:coffee :mug}
+
+;; notice that this is different
+;; than simply taking the union of
+;; the four sets
+(println (clojure.set/union a b c d))
+; => #{:coffee :coffee-roaster :kettle :mug}
 {% endhighlight %}
+
+Using timestamps is fine for some domains, but what if our update-rate is high
+enough that we can't trust our clocks to by synchronized enough?
