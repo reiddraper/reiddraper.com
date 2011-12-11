@@ -6,8 +6,10 @@ title: Introducing Knockbox
 For the past few weeks I've been working on a Clojure
 library called [knockbox](https://github.com/reiddraper/knockbox).
 It's a library meant to make dealing with conflict-resolution
-in eventually-consistent databases easier.
-TODO: check out this article
+in eventually-consistent databases easier. If you're not familiar
+with eventual-consistency, I'd suggest
+[this](http://www.allthingsdistributed.com/2008/12/eventually_consistent.html) article
+by Amazon CTO Werner Vogels.
 
 Distributed databases like [Riak](https://github.com/basho/riak) let you trade
 consistency for availability. This means that at any given moment,
@@ -22,13 +24,13 @@ Was the coffee maker recently added and that just hasn't been reflected in the o
 Or was the coffee maker recently deleted? It turns out that you often have to change the
 way you represent your data in order to preserve the original intentions.
 
-Those who wanted to implement their own objects with conflict-resolution semantics
-have had to figure it out themselves or read academic papers like
+Developers who wanted to implement data-types with conflict-resolution semantics
+have had to figure it out themselves, or read academic papers like
 [A comprehensive study of Convergent and Commutative Replicated Data Types](http://hal.archives-ouvertes.fr/inria-00555588/).
 [statebox](https://github.com/mochi/statebox) was the first popular open source
 project to help ease the burden for developers wanting to take advantage of
 eventual-consistency. As I've been learning Clojure recently, I thought
-I'd try my hand at implementing some of the data-types idiomatically.
+I'd try my hand at putting together a similar library.
 
 The main goal has been to have the types conform to all appropriate
 Clojure Protocols and Java interfaces. This means my last-write-wins
@@ -40,6 +42,9 @@ only a single method, which looks like:
 {% highlight clojure %}
 (resolve [a b]))
 {% endhighlight %}
+
+This function should take two conflicing objects and return a new,
+resolved object.
 
 Resolving a list of replicas (often called siblings when they're in conflict)
 is as simple as providing the `resolve` function to `reduce`. This is, however,
@@ -56,7 +61,7 @@ Let's now create some conflicting replicas, and see see how they
 get resolved. Here we'll use a last-write-wins (`lww`) set. The resolution
 semantics used here are to use timestamps to resolve an add/delete
 conflict for a particular item. This is not the same as using
-last-write-wins for the whole set, because we're doing it per
+timestamps for the whole set, because we're doing it per
 item. To get a REPL with the correct classpath, you
 can either add `[knockbox "0.0.1-SNAPSHOT"]` to your `project.clj`,
 or clone the knockbox repository and type `lein repl`.
@@ -86,7 +91,7 @@ or clone the knockbox repository and type `lein repl`.
 {% endhighlight %}
 
 Using timestamps is fine for some domains, but what if our update-rate is high
-enough that we can't trust our clocks to by synchronized enough? The
+enough that we can't trust our clocks to be synchronized enough? The
 `observed-remove` set works by assigning a uuid to each addition. Deletes
 will then override any uuids they have seen for a particular item in the set.
 This means that when add/delete conflicts happen, addition will win because
