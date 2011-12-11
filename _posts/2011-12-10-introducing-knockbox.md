@@ -40,7 +40,7 @@ a `Resolvable` Protocol for all of these types to implement. There's
 only a single method, which looks like:
 
 {% highlight clojure %}
-(resolve [a b]))
+(resolve [a b])
 {% endhighlight %}
 
 This function should take two conflicing objects and return a new,
