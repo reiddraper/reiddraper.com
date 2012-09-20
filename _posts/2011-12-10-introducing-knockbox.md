@@ -92,10 +92,10 @@ or clone the knockbox repository and type `lein repl`.
 
 Using timestamps is fine for some domains, but what if our update-rate is high
 enough that we can't trust our clocks to be synchronized enough? The
-`observed-remove` set works by assigning a uuid to each addition. Deletes
-will then override any uuids they have seen for a particular item in the set.
+`observed-remove` set works by assigning a UUID to each addition. Deletes
+will then override any UUIDs they have seen for a particular item in the set.
 This means that when add/delete conflicts happen, addition will win because
-the delete action couldn't have seen the uuid created by the addition. Let's
+the delete action couldn't have seen the UUID created by the addition. Let's
 see this in action.
 
 {% highlight clojure %}
