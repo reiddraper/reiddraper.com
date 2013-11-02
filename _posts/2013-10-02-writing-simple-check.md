@@ -28,3 +28,12 @@ little more concretely how this looks.
 
 In Haskell:
 
+{% highlight haskell %}
+import Data.List
+
+sortIdempotent :: [Int] -> Bool
+sortIdempotent xs = (sort xs) == (sort (sort xs))
+
+quickCheck sortIdempotent
+-- +++ OK, passed 100 tests.
+{% highlight haskell %}
