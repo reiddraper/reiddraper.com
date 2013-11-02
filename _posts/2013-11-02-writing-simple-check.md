@@ -48,3 +48,14 @@ In Clojure:
     (sort-idempotent coll)))
 ;; {:result true, :num-tests 100, :seed 1383433754854}
 {% endhighlight clojure %}
+
+In Erlang (also dynamically typed):
+{% highlight erlang %}
+prop_sort_idempotent() ->
+    ?FORALL(Xs, list(int()),
+            lists:sort(Xs) =:=
+            lists:sort(lists:sort(Xs))).
+
+%% eqc:quickcheck(prop_sort_idempotent()).
+%% OK, passed 100 tests
+{% endhighlight erlang %}
