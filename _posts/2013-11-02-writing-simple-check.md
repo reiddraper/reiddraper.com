@@ -29,11 +29,22 @@ little more concretely how this looks.
 In Haskell:
 
 {% highlight haskell %}
-import Data.List
-
 sortIdempotent :: [Int] -> Bool
 sortIdempotent xs = (sort xs) == (sort (sort xs))
 
 quickCheck sortIdempotent
 -- +++ OK, passed 100 tests.
 {% endhighlight haskell %}
+
+In Clojure:
+
+{% highlight clojure %}
+(defn sort-idempotent
+  [coll]
+  (= (sort coll) (sort (sort coll))))
+
+(sc/quick-check 100
+  (prop/for-all [coll (gen/vector gen/int)]
+    (sort-idempotent coll)))
+;; {:result true, :num-tests 100, :seed 1383433754854}
+{% endhighlight clojure %}
