@@ -36,4 +36,4 @@ sortIdempotent xs = (sort xs) == (sort (sort xs))
 
 quickCheck sortIdempotent
 -- +++ OK, passed 100 tests.
-{% highlight haskell %}
+{% endhighlight haskell %}
