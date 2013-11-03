@@ -13,7 +13,7 @@ main = hakyll $ do
      css
 
      match "posts/*" $ do
-         route $ setExtension "html"
+         route $ composeRoutes (gsubRoute "posts/" (const "")) (setExtension "html")
          compile $ pandocCompiler
              >>= loadAndApplyTemplate "templates/post.html" postCtx
              >>= loadAndApplyTemplate "templates/default.html" defaultContext
@@ -28,7 +28,7 @@ matchCss =  match "css/*" $ compile getResourceBody
 
 buildConcatenatedCss :: Rules ()
 buildConcatenatedCss = create ["site.css"] $ do
-                         route idRoute
+                         route $ constRoute "css/site.css"
                          compile concatenateAndCompress
 
 concatenateCss :: Compiler (Item [Char])
