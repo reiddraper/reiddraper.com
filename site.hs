@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 import Data.Monoid (mappend)
+import Data.String.Utils (replace)
 import Hakyll
 
 main :: IO ()
@@ -13,7 +14,7 @@ main = hakyll $ do
      css
 
      match "posts/*" $ do
-         route $ composeRoutes (gsubRoute "posts/" (const "")) (setExtension "html")
+         route $ composeRoutes (composeRoutes (gsubRoute "posts/" (const "")) (gsubRoute ".md" (const "/index.md"))) (setExtension "html")
          compile $ pandocCompiler
              >>= loadAndApplyTemplate "templates/post.html" postCtx
              >>= loadAndApplyTemplate "templates/default.html" defaultContext
@@ -28,6 +29,7 @@ main = hakyll $ do
              let indexContext = listField "posts" postCtx (return posts) `mappend` defaultContext
              makeItem "" >>= loadAndApplyTemplate "templates/index.html" indexContext
              >>= loadAndApplyTemplate "templates/default.html" defaultContext
+             >>= (return . removeIndexFromUrls)
 
 ------------------------------------------------------------------------------
 
@@ -59,6 +61,9 @@ loadCss = mapM load ["css/normalize.css",
 
 css :: Rules ()
 css = matchCss >> buildConcatenatedCss
+
+removeIndexFromUrls :: (Item String) -> (Item String)
+removeIndexFromUrls = fmap $ withUrls (replace "index.html" "")
 
 postCtx :: Context String
 postCtx =
