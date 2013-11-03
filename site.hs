@@ -21,6 +21,14 @@ main = hakyll $ do
 
      match "templates/*" $ compile templateCompiler
 
+     create ["index.html"] $ do
+         route idRoute
+         compile $ do
+             posts <- recentFirst =<< loadAll "posts/*"
+             let indexContext = listField "posts" postCtx (return posts) `mappend` defaultContext
+             makeItem "" >>= loadAndApplyTemplate "templates/index.html" indexContext
+             >>= loadAndApplyTemplate "templates/default.html" defaultContext
+
 ------------------------------------------------------------------------------
 
 matchCss :: Rules ()
@@ -54,5 +62,5 @@ css = matchCss >> buildConcatenatedCss
 
 postCtx :: Context String
 postCtx =
-    dateField "date" "%B %e, %Y" `mappend`
+    dateField "date" "%b %e, %Y" `mappend`
     defaultContext
