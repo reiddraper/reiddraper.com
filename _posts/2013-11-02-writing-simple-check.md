@@ -3,28 +3,31 @@ layout: post
 title: Writing simple-check
 ---
 
-For the past several months I've been working on a QuickCheck library for
-Clojure, called simple-check. In this post I will compare simple-check with
-some other QuickCheck implementations, as well as describe some of the
-challenges I ran into porting QuickCheck from Haskell to Clojure. This will not
-act as an introduction to QuickCheck, or property-based testing.
+For the past several months I've been working on a
+[QuickCheck](http://en.wikipedia.org/wiki/QuickCheck) (QC) library for Clojure:
+[simple-check](https://github.com/reiddraper/simple-check). In this post I will
+compare **simple-check** with some of the other QC implementations, and
+describe some of the challenges I ran into porting QC from Haskell to Clojure.
+This will not act as an introduction to QC, or property-based testing.
+Further, this post assumes some familiarity with Haskell and Clojure.
 
-One of the first major differences between writing a QuickCheck in a
-statically-typed language and a dynamically-typed one is that with
-static-types, we get to use that information to inform QuickCheck of what
-generators to use to test our function. For example, if our function under test
-has the type `Int -> [Int] -> Bool`, Haskell QuickCheck will use this
-information to use generators that generate `Int` and `[Int]`, respectively.
-Furthermore, this takes advantage of the fact the we can have polymorphic
-_values_ in Haskell. For example, the `Arbitrary` typeclass in Haskell has a
-function, `arbitrary`, whose signature is `Gen a`. This allows the compiler to
-fill in the specialized version of `Gen a` for us, without us having to provide
-a dummy value just to get type-based dispatch. In dynamically-typed languages,
-we resort to explicitly specifying the generators to use for our test (which
-you can also choose to do in Haskell). For the power we get from our tests, I
-think it turns out not to be too onerous to have to explicitly provide the
-generators to use, but no doubt more succinct in Haskell. Let's take a look a
-little more concretely how this looks.
+## Typing
+
+One of the major differences between writing a QC in a statically-typed
+language and a dynamically-typed language is that with static-types, we get to use
+that information to inform QC of what generators to use to test our function.
+For example, if our function under test has the type `Int -> [Int] -> Bool`,
+Haskell QC will use this information to use generators that generate `Int` and
+`[Int]`, respectively.  Furthermore, this takes advantage of the fact the we
+can have polymorphic _values_ in Haskell. For example, the `Arbitrary`
+typeclass in Haskell has a function, `arbitrary`, whose signature is `Gen a`.
+This allows the compiler to fill in the specialized version of `Gen a` for us,
+without us having to provide a dummy value just to get type-based dispatch. In
+dynamically-typed languages, we resort to explicitly specifying the generators
+to use for our test (which you can also choose to do in Haskell). For the power
+we get from our tests, I think it turns out not to be too onerous to have to
+explicitly provide the generators to use, but no doubt more succinct in
+Haskell. Let's take a look a little more concretely how this looks.
 
 In Haskell:
 
@@ -117,4 +120,16 @@ class Arbitrary a where
 
 The top of the tree is a randomly generated value, and its children are the
 first level of shrinking the value. Generator combinators can then manipulate
-this shrink tree. 
+this shrink tree. Because we now act on these shrink trees, we simply create
+larger trees as we create more complex generators. To give a concrete example,
+the expression `(fmap (partial * 2) gen/int)` will create a new generator based
+on `gen/int`, which multiplies the randomly generated elements by two. But
+since this function is also applied to the children in the shrink tree, every
+element in the shrink tree will be multiplied by two. We can also now write
+generator combinators like `elements`, which creates a generator by choosing a
+random element from a list. This generator will shrink toward choosing earlier
+elements in the list. Where we to use `elements` in our `arbitrary` function in
+Haskell QuickCheck, we'd have to write the shrinking logic ourselves. It's
+important to note, however, that this is specific to Haskell QuickCheck, and
+not the language itself, we could've implemented Haskell's QuickCheck as
+described here.
