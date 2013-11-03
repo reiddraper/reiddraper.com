@@ -10,9 +10,7 @@ main = hakyll $ do
          route idRoute
          compile copyFileCompiler
 
-     match "css/*" $ do
-         route idRoute
-         compile copyFileCompiler
+     css
 
      match "posts/*" $ do
          route $ setExtension "html"
@@ -24,6 +22,35 @@ main = hakyll $ do
      match "templates/*" $ compile templateCompiler
 
 ------------------------------------------------------------------------------
+
+matchCss :: Rules ()
+matchCss =  match "css/*" $ compile getResourceBody
+
+buildConcatenatedCss :: Rules ()
+buildConcatenatedCss = create ["site.css"] $ do
+                         route idRoute
+                         compile concatenateAndCompress
+
+concatenateCss :: Compiler (Item [Char])
+concatenateCss = do
+    items <- loadCss
+    makeItem $ concatMap itemBody (items :: [Item String])
+
+concatenateAndCompress :: Compiler (Item String)
+concatenateAndCompress = concatenateCss >>= (return . compressCssItem)
+
+compressCssItem :: (Item String) -> (Item String)
+compressCssItem = fmap compressCss
+
+-- Explicitly load the css in this order, as it's
+-- the order we want to concatenate them in
+loadCss :: Compiler [Item String]
+loadCss = mapM load ["css/normalize.css",
+                      "css/syntax.css",
+                      "css/application.css"]
+
+css :: Rules ()
+css = matchCss >> buildConcatenatedCss
 
 postCtx :: Context String
 postCtx =
