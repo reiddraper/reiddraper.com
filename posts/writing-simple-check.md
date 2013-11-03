@@ -1,5 +1,6 @@
 ---
 title: Writing simple-check
+published: 2013-11-03 00:00:00
 ---
 
 For the past several months I've been working on a

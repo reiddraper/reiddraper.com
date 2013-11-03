@@ -1,5 +1,6 @@
 ---
 title: Introducing Knockbox
+published: 2011-12-10 00:00:00
 ---
 
 For the past few weeks I've been working on a Clojure

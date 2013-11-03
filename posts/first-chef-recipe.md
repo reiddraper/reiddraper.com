@@ -1,5 +1,6 @@
 ---
 title: Writing Your First Chef Recipe
+published: 2011-04-18 00:00:00
 ---
 
 [Chef](http://www.opscode.com/chef/ "Opscode Chef") is an infrastructure automation tool

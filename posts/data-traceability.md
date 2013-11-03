@@ -1,5 +1,6 @@
 ---
 title: Data Traceability
+published: 2013-05-16 00:00:00
 ---
 
 This text appears as Chapter 17 in O'Reilly's [Bad Data
