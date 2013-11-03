@@ -51,10 +51,12 @@ In Clojure:
 
 In Erlang (also dynamically typed), using [Erlang QuickCheck (EQC)](http://www.quviq.com/index.html):
 {% highlight erlang %}
+sort_idempotent(Xs) ->
+  lists:sort(Xs) =:= lists:sort(lists:sort(Xs)).
+
 prop_sort_idempotent() ->
     ?FORALL(Xs, list(int()),
-            lists:sort(Xs) =:=
-            lists:sort(lists:sort(Xs))).
+            sort_idempotent(Xs)).
 
 eqc:quickcheck(prop_sort_idempotent()).
 %% OK, passed 100 tests
@@ -66,19 +68,20 @@ explicitly provide the generator to use to test our function.
 ## Shrinking
 
 Some QC implementations have a feature called shrinking. This allows failing
-tests to be shrunk to 'smaller', failing cases, where 'smaller' is data-type
+tests to be shrunk to 'smaller' failing cases, where 'smaller' is data-type
 specific, something that'd be easier for the programmer to debug. For example,
 a list with five elements as input is going to be easier for the programmer to
 debug than a list with one-thousand elements. In Haskell QuickCheck, random
-element generation and shrinking are treated separately. That is to say, if you
+element generation and shrinking are treated separately. That is, if you
 want your type to shrink, you have to implement that separately from generating
-random values of your type. Let's take a look at the `Arbitrary` type class.
+random values of your type. Let's see the type class where these two functions
+live, `Arbitrary`:
 
 {% highlight haskell %}
 class Arbitrary a where
   arbitrary :: Gen a
 
-  -- the returned list is first-level of the shrink tree
+  -- the returned list is the first-level of the shrink tree
   shrink :: a -> [a]
   -- default implementation
   shrink _ = []
@@ -87,32 +90,31 @@ class Arbitrary a where
 Most (all?) of the standard Prelude types have an `Arbitrary` instance already
 written, but you'll need to write one for your own types. Generally you'll
 write your implementation of `arbitrary` based on the provided
-generator-combinators, like `choose`, `elements` and `oneof`. If we want our
-type to shrink, we'll have to implement this on our own. Again, this
-is due to the fact that value generation and shrinking are treated
-separately. _simple-check_ and Erlang QuickCheck take a different approach. When you write a
-generator, using similar generator-combinators as in Haskell, you get shrinking
-'for free'. That's because the notion of generating values and shrinking are
-tied together in these implementations. This is handy because it saves
-us from having to write boilerplate code to implement shrinking. Further
-because it's not nearly as common to create our own types in Clojure and Erlang
-(it's not even possible in Erlang), we don't want to have to create our own new
-type solely to implement some shrink protocol. Further, even implicit
-constraints in our generator are respected during shrinking. For example,
-suppose we write a new generator which multiplies randomly generated integers
-by two. This will always result in an even number being generated, and this
-will remain true during shrinking. This works because in simple-check, instead
-of the arbitrary function generating random values, we generate random values,
-along with the shrink tree for that value. Erlang QuickCheck is proprietary,
-but I imagine it works similarly. Let's imagine how this might look using
-Haskell's types:
+generator-combinators, like `choose`, `elements` and `oneof`. If you want your
+type to shrink, you'll have to implement this on your own. Again, this is due
+to the fact that value generation and shrinking are treated separately.
+_simple-check_ and Erlang QuickCheck take a different approach. When you write
+a generator, using generator-combinators, you get shrinking 'for free'. That's
+because the notion of generating values and shrinking are tied together in
+these implementations. This is handy because it saves us from having to write
+boilerplate code to implement shrinking. Further, because it's not nearly as
+common to create our own types in Clojure or Erlang (it's not even possible in
+Erlang), we don't want to have to create our own new type solely to implement
+some shrink protocol. As a result, even implicit constraints in our generator
+are respected during shrinking. For example, suppose we write a new generator
+which multiplies randomly generated integers by two. This will always result in
+an even number being generated, and this will remain true during shrinking.
+This works because in simple-check, instead of the arbitrary function
+generating random values, we generate random values, along with the shrink tree
+for that value. Erlang QuickCheck is proprietary, but I imagine it works
+similarly.  Let's imagine how this might look using Haskell's types:
 
 {% highlight haskell %}
 -- a RoseTree is just an n-ary tree
 data RoseTree a = RoseTree a [RoseTree a]
 
 class Arbitrary a where
-  -- instead of generator an a, we generate a shrink tree of a
+  -- instead of generating an `a`, we generate a shrink tree of `a`
   arbitrary :: Gen (RoseTree a)
 {% endhighlight haskell %}
 
@@ -124,7 +126,7 @@ the expression `(fmap (partial * 2) gen/int)` will create a new generator based
 on `gen/int`, which multiplies the randomly generated elements by two. But
 since this function is also applied to the children in the shrink tree, every
 element in the shrink tree will be multiplied by two. We can also now write
-generator combinators like `elements`, which creates a generator by choosing a
+generator-combinators like `elements`, which creates a generator by choosing a
 random element from a list. This generator will shrink toward choosing earlier
 elements in the list. Were we to use `elements` in our `arbitrary` function in
 Haskell QC, we'd have to write the shrinking logic ourselves. It's
