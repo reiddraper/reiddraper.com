@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Writing Your First Chef Recipe
 ---
 

@@ -1,0 +1,17 @@
+name:                site
+version:             0.1.0.0
+synopsis:            Static site for reiddraper.cm
+homepage:            http://reiddraper.com
+license:             AllRightsReserved
+author:              Reid Draper
+maintainer:          reiddraper@gmail.com
+category:            Web
+build-type:          Simple
+cabal-version:       >=1.8
+
+executable site
+  main-is:             site.hs
+  Ghc-options:         -Wall
+  build-depends:       base >=4.5.0,
+                       hakyll ==4.4.1.0,
+                       clay ==0.8

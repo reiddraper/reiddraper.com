@@ -1,5 +1,4 @@
 ---
-layout: post
 title: 100-Node Riak Cluster for $2
 ---
 
