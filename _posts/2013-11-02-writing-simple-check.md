@@ -117,14 +117,4 @@ class Arbitrary a where
 
 The top of the tree is a randomly generated value, and its children are the
 first level of shrinking the value. Generator combinators can then manipulate
-this shrink tree. As a result of this, we now have two nested monads in our
-generators, `Gen` and `RoseTree`. A concrete type might be `Gen (RoseTree
-Int))`. This means that before in Haskell QuickCheck, were we'd previously
-`fmap`'d over a generator, we'd likely now want to `fmap` over both the
-`Gen`, and the `RoseTree`. This is simple, since we just need `fmap` with
-`fmap` as our function. Specifically: `mapGen f gen = fmap (fmap f) gen`.
-Mimicing `>>=` is a little more complex, as we need a function of type: `Gen
-(RoseTree a) -> (a -> Gen (RoseTree b)) -> Gen (RoseTree b)`. This is, in fact
-no longer `>>=`, but provided similar functionality to the `>>=` for our old
-`Gen`. This is a little trickier to implement, but `Data.Traversable.sequence`
-gets us there.
+this shrink tree. 
