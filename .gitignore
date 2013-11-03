@@ -1,8 +1,5 @@
 _site/
 .sass-cache
-css/ie.css
-css/print.css
-css/screen.css
 .cabal-sandbox
 cabal.sandbox.config
 _cache/
