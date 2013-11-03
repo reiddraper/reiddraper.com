@@ -1,6 +1,6 @@
 ---
-layout: post
 title: 100-Node Riak Cluster for $2
+published: 2011-04-03 00:00:00
 ---
 
 Riak is a distributed key-value store; data is replicated and partitioned

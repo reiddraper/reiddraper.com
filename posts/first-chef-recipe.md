@@ -1,6 +1,6 @@
 ---
-layout: post
 title: Writing Your First Chef Recipe
+published: 2011-04-18 00:00:00
 ---
 
 [Chef](http://www.opscode.com/chef/ "Opscode Chef") is an infrastructure automation tool
@@ -66,7 +66,7 @@ Instructions for installing Vagrant can be found
 Create a file called `Vagrantfile` in the root of the repository.
 Edit it to look like this:
 
-{% highlight ruby %}
+```ruby
 Vagrant::Config.run do |config|
   config.vm.box = "lucid32"
    config.vm.provision :chef_solo do |chef|
@@ -75,7 +75,7 @@ Vagrant::Config.run do |config|
      chef.log_level = :debug
   end 
 end
-{% endhighlight %}
+```
 
 The two most important things to note here are that we're telling our
 VM to use Chef to install Redis, and that we want the log level set
@@ -99,7 +99,7 @@ Next we'll look at `cookbooks/redis/attributes/default.rb`,
 which is where we'll be defining the variable options for installing
 and running Redis. Edit it to look like:
 
-{% highlight ruby %}
+```ruby
 default[:redis][:dir]       = "/etc/redis"
 default[:redis][:data_dir]  = "/var/lib/redis"
 default[:redis][:log_dir]   = "/var/log/redis"
@@ -108,7 +108,7 @@ default[:redis][:loglevel]  = "notice"
 default[:redis][:user]      = "redis"
 default[:redis][:port]      = 6379
 default[:redis][:bind]      = "127.0.0.1"
-{% endhighlight %}
+```
 
 
 This file gives default values for configuration options.
@@ -142,7 +142,7 @@ In this recipe we're using two templates, one for the configuration to
 `etc/init.d/` scripts.
 Edit `cookbooks/redis/templates/default/redis.conf.erb` to look like:
 
-{% highlight erb %}
+```bash
 port <%= node[:redis][:port] %>
 bind <%= node[:redis][:bind] %>
 loglevel <%= node[:redis][:loglevel] %>
@@ -156,11 +156,11 @@ save 300 10
 save 60 10000
 rdbcompression yes
 dbfilename dump.rdb
-{% endhighlight %}
+```
 
 and `cookbooks/redis/templates/default/redis.upstart.conf.erb` like:
 
-{% highlight erb %}
+```bash
 #!upstart
 description "Redis Server"
 
@@ -174,7 +174,7 @@ respawn
 exec sudo -u $USER sh -c "/usr/local/bin/redis-server \
   /etc/redis/redis.conf 2>&1 >> \
   <%= node[:redis][:log_dir] %>/redis.log"
-{% endhighlight %}
+```
 
 
 ### The Recipe File
@@ -193,7 +193,7 @@ and write out the templates.
 Edit `cookbooks/redis/recipes/default.rb`
 to look like:
 
-{% highlight ruby %}
+```ruby
 package "build-essential" do
   action :install
 end
@@ -264,7 +264,7 @@ end
 service "redis" do
   action [:enable, :start]
 end
-{% endhighlight %}
+```
 
 
 ## Trying Our Recipe

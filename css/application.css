@@ -1,0 +1,89 @@
+body {
+  margin: 0;
+  font-family: "minion-pro-1","minion-pro-2";
+  font-size: 20px;
+  color: #333333;
+}
+
+a, a:visited, a:hover {
+  text-decoration: none;
+  color: #53777A;
+}
+
+p {
+  font-size: 1em;
+  line-height: 1.4;
+}
+
+h1, h2, h3 {
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-weight: normal;
+}
+
+pre, code {
+  font: 0.9em "andale mono", "lucida console", monospace;
+  white-space: pre;
+  overflow: scroll;
+}
+
+pre.sourceCode {
+  background-color: rgb(237, 237, 237);
+  padding: 3px 6px 3px 6px;
+}
+
+.container {
+  padding: 0em 1em 1em 1em;
+  max-width: 35em;
+  margin: auto;
+}
+
+.content {
+  margin: 2em 0 2em 0;
+  clear: both;
+}
+
+@media all and (min-width: 481px) {
+  #site-title {
+    float: right;
+    font-family: Georgia, sans-serif;
+    font-size: 25px;
+    color: white;
+    text-align: right;
+    background-color: #53777a;
+    border-radius: 0em 0em 0.4em 0.4em;
+    padding: 1em 1em 1em 1em;
+  }
+}
+
+@media all and (max-width: 480px) {
+  h1 {
+    font-size: 1.3em;
+  }
+
+  h2 {
+    font-size: 1.2em;
+  }
+
+  h3 {
+    font-size: 1.1em;
+  }
+
+  .container {
+    border-top-style: solid;
+    border-color: #53777a;
+    border-top-width: 3px;
+  }
+
+  #site-title {
+    display: none;
+  }
+}
+
+#footer {
+  margin: 4em 0em 2em 0em;
+  padding-top: 1em;
+  border-top: 4px;
+  border-top-style: solid;
+  border-color: #CCC;
+  text-align: right;
+}
