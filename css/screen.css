@@ -603,6 +603,7 @@ code {
   border-width: 1px;
   background-color: #EDEDED;
   font-family: monospace;
+  overflow: auto;
 }
 
 /* line 89, ../sass/screen.scss */

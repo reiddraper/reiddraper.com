@@ -38,9 +38,9 @@ code that expects normal Clojure data types. Next, I've defined
 a `Resolvable` Protocol for all of these types to implement. There's
 only a single method, which looks like:
 
-{% highlight clojure %}
+```clojure
 (resolve [a b])
-{% endhighlight %}
+```
 
 This function should take two conflicing objects and return a new,
 resolved object.
@@ -65,7 +65,7 @@ item. To get a REPL with the correct classpath, you
 can either add `[knockbox "0.0.1-SNAPSHOT"]` to your `project.clj`,
 or clone the knockbox repository and type `lein repl`.
 
-{% highlight clojure %}
+```clojure
 (require 'knockbox.core)
 (require '[knockbox.sets :as kbsets])
 
@@ -87,7 +87,7 @@ or clone the knockbox repository and type `lein repl`.
 ;; the four sets
 (println (clojure.set/union a b c d))
 ; => #{:coffee :coffee-roaster :kettle :mug}
-{% endhighlight %}
+```
 
 Using timestamps is fine for some domains, but what if our update-rate is high
 enough that we can't trust our clocks to be synchronized enough? The
@@ -97,7 +97,7 @@ This means that when add/delete conflicts happen, addition will win because
 the delete action couldn't have seen the UUID created by the addition. Let's
 see this in action.
 
-{% highlight clojure %}
+```clojure
 (require 'knockbox.core)
 (require '[knockbox.sets :as kbsets])
 
@@ -115,7 +115,7 @@ see this in action.
 ;; figuring out that c supersedes it
 (println (knockbox.core/resolve [b c]))
 ; => #{:vodka :gin :rum}
-{% endhighlight %}
+```
 
 That's all for this first post, so go ahead and take a look
 at [knockbox on github](https://github.com/reiddraper/knockbox).

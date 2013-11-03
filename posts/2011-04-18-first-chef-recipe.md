@@ -141,7 +141,7 @@ In this recipe we're using two templates, one for the configuration to
 `etc/init.d/` scripts.
 Edit `cookbooks/redis/templates/default/redis.conf.erb` to look like:
 
-```erb
+```bash
 port <%= node[:redis][:port] %>
 bind <%= node[:redis][:bind] %>
 loglevel <%= node[:redis][:loglevel] %>
@@ -159,7 +159,7 @@ dbfilename dump.rdb
 
 and `cookbooks/redis/templates/default/redis.upstart.conf.erb` like:
 
-```erb
+```bash
 #!upstart
 description "Redis Server"
 
