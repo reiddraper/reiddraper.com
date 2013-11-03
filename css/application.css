@@ -22,6 +22,7 @@ h1, h2, h3 {
 
 pre, code {
   font: 0.9em "andale mono", "lucida console", monospace;
+  white-space: pre;
   overflow: scroll;
 }
 

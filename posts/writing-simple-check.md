@@ -27,7 +27,6 @@ dynamically-typed languages, we resort to explicitly specifying the generators
 to use for our test. Let's see a concrete example:
 
 In Haskell:
-
 ```haskell
 sortIdempotent :: [Int] -> Bool
 sortIdempotent xs = (sort xs) == (sort (sort xs))
@@ -37,7 +36,6 @@ quickCheck sortIdempotent
 ```
 
 In Clojure:
-
 ```clojure
 (defn sort-idempotent?
   [coll]
