@@ -14,20 +14,17 @@ Further, this post assumes some familiarity with Haskell and Clojure.
 ## Typing
 
 One of the major differences between writing a QC in a statically-typed
-language and a dynamically-typed language is that with static-types, we get to use
-that information to inform QC of what generators to use to test our function.
-For example, if our function under test has the type `Int -> [Int] -> Bool`,
-Haskell QC will use this information to use generators that generate `Int` and
-`[Int]`, respectively.  Furthermore, this takes advantage of the fact the we
-can have polymorphic _values_ in Haskell. For example, the `Arbitrary`
-typeclass in Haskell has a function, `arbitrary`, whose signature is `Gen a`.
-This allows the compiler to fill in the specialized version of `Gen a` for us,
-without us having to provide a dummy value just to get type-based dispatch. In
+language and a dynamically-typed language is that with static-types, we get to
+use that information to inform QC of what generators to use to test our
+function. For example, if our function has the type `Int -> [Int] -> Bool`,
+Haskell QC will use this information to generate `Int` and `[Int]`,
+respectively. Furthermore, this takes advantage of the fact the we can have
+polymorphic _values_ in Haskell. The `Arbitrary` type class in Haskell has a
+function, `arbitrary`, whose signature is `Gen a`. This allows the compiler to
+fill in the specialized version of `Gen a` for us. In Clojure, we can only use
+type-based dispatch on an _argument_, not the return value. So, in
 dynamically-typed languages, we resort to explicitly specifying the generators
-to use for our test (which you can also choose to do in Haskell). For the power
-we get from our tests, I think it turns out not to be too onerous to have to
-explicitly provide the generators to use, but no doubt more succinct in
-Haskell. Let's take a look a little more concretely how this looks.
+to use for our test. Let's take a look a little more concretely how this looks.
 
 In Haskell:
 
@@ -77,7 +74,7 @@ easier for the programmer to debug than a list with one-thousand elements. In
 Haskell QuickCheck, random element generation and shrinking are treated
 separately. That is to say, if you want your type to shrink, you have to
 implement that separately from generating random values of your type. Let's
-take a look at the arbitrary typeclass.
+take a look at the arbitrary type class.
 
 {% highlight haskell %}
 class Arbitrary a where
