@@ -26,9 +26,10 @@ main = hakyll $ do
          route idRoute
          compile $ do
              posts <- recentFirst =<< loadAll "posts/*"
-             let indexContext = listField "posts" postCtx (return posts) `mappend` defaultContext
+             let indexContext = listField "posts" postCtx (return posts) `mappend`
+                                defaultContext
              makeItem "" >>= loadAndApplyTemplate "templates/index.html" indexContext
-             >>= loadAndApplyTemplate "templates/default.html" defaultContext
+             >>= loadAndApplyTemplate "templates/default.html" (constField "title" "Reid Draper" `mappend` defaultContext)
              >>= (return . removeIndexFromUrls)
 
 ------------------------------------------------------------------------------
