@@ -6,36 +6,43 @@ import Hakyll
 
 main :: IO ()
 main = hakyll $ do
-
-    match "images/*" $ do
-        route idRoute
-        compile copyFileCompiler
-
+    images
+    index
+    posts
+    templates
     css
-
-    match "posts/*" $ do
-        route $ composeRoutes (composeRoutes (gsubRoute "posts/" (const "")) (gsubRoute ".md" (const "/index.md"))) (setExtension "html")
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html" postCtx
-            >>= saveSnapshot "postContent"
-            >>= loadAndApplyTemplate "templates/default.html" defaultContext
-            >>= relativizeUrls
-
-    match "templates/*" $ compile templateCompiler
-
     atom
 
-    create ["index.html"] $ do
-        route idRoute
-        compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
-            let indexContext = listField "posts" postCtx (return posts) `mappend`
-                               defaultContext
-            makeItem "" >>= loadAndApplyTemplate "templates/index.html" indexContext
-            >>= loadAndApplyTemplate "templates/default.html" (constField "title" "Reid Draper" `mappend` defaultContext)
-            >>= (return . removeIndexFromUrls)
-
 ------------------------------------------------------------------------------
+
+images :: Rules ()
+images = match "images/*" $ do
+             route idRoute
+             compile copyFileCompiler
+
+templates :: Rules ()
+templates = match "templates/*" $ compile templateCompiler
+
+posts :: Rules ()
+posts = match "posts/*" $ do
+            route $ composeRoutes (composeRoutes (gsubRoute "posts/" (const "")) (gsubRoute ".md" (const "/index.md"))) (setExtension "html")
+            compile $ pandocCompiler
+                >>= loadAndApplyTemplate "templates/post.html" postCtx
+                >>= saveSnapshot "postContent"
+                >>= loadAndApplyTemplate "templates/default.html" defaultContext
+                >>= relativizeUrls
+
+index :: Rules ()
+index = create ["index.html"] $ do
+            route idRoute
+            compile $ do
+                blogPosts <- recentFirst =<< loadAll "posts/*"
+                let indexContext = listField "posts" postCtx (return blogPosts) `mappend`
+                                   defaultContext
+                makeItem "" >>= loadAndApplyTemplate "templates/index.html" indexContext
+                >>= loadAndApplyTemplate "templates/default.html" (constField "title" "Reid Draper" `mappend` defaultContext)
+                >>= (return . removeIndexFromUrls)
+
 
 matchCss :: Rules ()
 matchCss =  match "css/*" $ compile getResourceBody
@@ -88,6 +95,6 @@ atom = create ["atom.xml"] $ do
            route idRoute
            compile $ do
                let feedCtx = postCtx `mappend` bodyField "description"
-               posts <- fmap (take 10) . recentFirst =<<
+               blogPosts <- fmap (take 10) . recentFirst =<<
                    loadAllSnapshots "posts/*" "postContent"
-               renderAtom feedConfiguration feedCtx posts
+               renderAtom feedConfiguration feedCtx blogPosts
