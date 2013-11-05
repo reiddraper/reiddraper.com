@@ -139,7 +139,7 @@ shrinking, instead of traversing a tree of arguments to the function under
 test, and applying to values to the function the tree is traversed, we're able
 to use `fmap` to lazily apply to function to the entire tree. We then need only
 traverse a tree of booleans (representing test success or failure). This allows
-for a higher-level of abstraction. Fortunately, Clojure let's us mimic this, as
+for a higher-level of abstraction. Fortunately, Clojure lets us mimic this, as
 long as our types are represented as lazy sequences. To represent a large tree,
 we use a two-element vector, where the first element is the top value in the
 tree, and the second element is a lazy sequence, representing the children.
