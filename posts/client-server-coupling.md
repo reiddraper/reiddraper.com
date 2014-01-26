@@ -60,6 +60,21 @@ likely to band-aid the issue thoruhgout the code-base, 'upgrading' the data
 when its necessariy. This isparitcularly scary in a dynamically-typed langauge,
 where this can proliferate and have no cost seen at compile-time.
 
+This sentence ends with a references [^1], and actually has another [^2].
+
 ![sync](/images/coupling.png)
 
-And now some more text here.
+# References
+
+## RPC
+
+1. [Implementing Distributed Systems Using Linear Naming](http://dspace.mit.edu/handle/1721.1/7085)
+    * The "streaming problem" (p. 16)
+    * The "continuation problem" (p. 16-17)
+1. [Implementing Remote Procedure Calls. 1984](http://www.cs.princeton.edu/courses/archive/fall03/cs518/papers/rpc.pdf)
+1. [Remote Procedure Call - Nelson, 1981](http://bitsavers.trailing-edge.com/pdf/xerox/parc/techReports/CSL-81-9_Remote_Procedure_Call.pdf)
+
+# References 2
+
+[^1]: [pandoc](http://johnmacfarlane.net/pandoc/README.html#pandocs-markdown)
+[^2]: [google](https://google.com)
