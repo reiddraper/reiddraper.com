@@ -34,6 +34,31 @@ published: 2014-01-23 00:00:00
 
 ---
 
+1. Intro
+
+As web applications have become more complex, we're seeing more code running on
+the browser. Further, as platforms for running Javascript on the server
+[node.js, rhino, etc.] and compile-to-javascript languages [clojurescript, fay,
+ghcjs, etc.] become more popular, developers often seek to share code between
+the server and browser. Taking things further, there is an increasing trend for
+blurring the lines between whether code is running locally, or over the
+network. This is called RPC (remote procedure call). Unfortunately RPC, and
+increasing the coupling between server and browser code has several major
+flaws, which I shall enumerate.
+
+2. RPC
+
+RPC was first described in the 1970s, and given in name in RFC 707 [rfc 707].
+Nelson, and others further eleborated on the idea in the early 1980s. [^ nelson, 81, 84]. In his Doctoral thesis, Nelson defines RPC [citation]:
+
+> Remote procedure call is the synchronous language-level transfer of control
+> between programs in disjoint address spaces whose primary communication
+> medium is a narrow channel.
+
+3. Solutions
+
+---
+
 Web applications are quickly becoming more complex, and are more and more being
 written in languages that compile to Javascript. With this, there is a
 proliferation of libraries and code that are intended to be run on both a
@@ -120,6 +145,7 @@ This sentence ends with a references [^1], and actually has another [^2].
 ## Code sharing examples
 
 1. [Meteor.js with Matt Debergalis](https://www.youtube.com/watch?v=vpp-8gkPWVE)
+1. [derby](http://derbyjs.com/)
 1. [yesod-fay](https://hackage.haskell.org/package/yesod-fay)
 1. [fay happstack](http://happstack.com/page/view-page-slug/15/happstack-fay-acid-state-shared-datatypes-are-awesome)
 1. [clojurescript - shoreleave](https://github.com/ohpauleez/shoreleave)
