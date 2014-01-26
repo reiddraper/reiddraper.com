@@ -32,8 +32,6 @@ published: 2014-01-23 00:00:00
 1. Make sure this doesn't come across too negative or preachy.
 1. Title? Relate to coupling? Or just poor abstraction.
 
----
-
 1. Intro
 
 As web applications have become more complex, we're seeing more code running on
@@ -46,7 +44,7 @@ network. This is called RPC (remote procedure call). Unfortunately RPC, and
 increasing the coupling between server and browser code has several major
 flaws, which I shall enumerate.
 
-2. RPC
+2. RPC and coupling
 
 RPC was first described in the 1970s, and given in name in RFC 707 [rfc 707].
 Nelson, and others further eleborated on the idea in the early 1980s. [^ nelson, 81, 84]. In his Doctoral thesis, Nelson defines RPC [citation]:
@@ -54,6 +52,40 @@ Nelson, and others further eleborated on the idea in the early 1980s. [^ nelson,
 > Remote procedure call is the synchronous language-level transfer of control
 > between programs in disjoint address spaces whose primary communication
 > medium is a narrow channel.
+
+There are many modern tools which provide such an interface with applications
+running on the browser, with server-side applications [meteor, derby,
+shoreline, dnode, etc.]. In addition to presenting remote function invocations
+as local, many of these tools allow data-types (should that fit the semantics
+of the langauge) to be shared between the browser and server. We'll see that,
+where used naively, even sharing data-types between the browser and server can
+cause serious issues. FIrst, let's dive into the fundamental issues with RPC.
+
+This is not the first writing to criticize RPC. RPC's known issues have been
+described many times before [vinoski, tannenbaum]. All of the issues with RPC
+are a result of hte following: the semantics of network communication should
+not be hidden, as if remote communication were local. Using local-semantics
+masks many potential issues with network communication (and distributed
+systems):
+
+1. Network communication is unreliable. The local function interfact has no
+   notion of a timeout. HOwever, in order to correctly model network
+   communicaton, we mustn't allow our functions to wait forever on a response.
+   The remote machine may have crashed, and will never reply. Further, if the
+   remote machine itself makes another RPC call, and one of them fails, the
+   client has no way of knowing 'how much' of the call was actually executed.
+   This is why idempotent functions are desired in distributed systems
+   programming [vinoski].
+
+1. The procedure call does not adequetly describe streaming communication. IN
+   network communication, we often don't want to incur a roundtrip (remember
+   our synchronous communcaiton model) for every piece of data recveived
+   [bawden]. "Streaming problem".
+
+1. Procedure calls represent synchronus communication. They can (naively)
+   represnet communicaton from machine A->B->A. They don't however work to
+   represnet communication where the reuslt should not be returned to the
+   caller. Bawden calls this the "continuation problem" [bawden].
 
 3. Solutions
 

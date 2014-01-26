@@ -31,6 +31,10 @@ pre.sourceCode {
   padding: 3px 6px 3px 6px;
 }
 
+blockquote {
+    font-style: italic;
+}
+
 .container {
   padding: 0em 1em 1em 1em;
   max-width: 35em;
