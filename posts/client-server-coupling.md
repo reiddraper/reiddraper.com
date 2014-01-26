@@ -3,6 +3,37 @@ title: Client-server coupling
 published: 2014-01-23 00:00:00
 ---
 
+# Outline
+
+1. Intro
+    1. Describe current state
+        * more complicated applications
+        * more compile-to-js languages
+        * single-page applications
+    1. Introduce RPC as appealing solution. It's bad.
+    1. You're building a distributed system
+1. RPC
+    1. Problems (relate each to poor abstraction)
+        1. the 'streaming problem'
+        1. the 'continuation problem'
+        1. versioning
+            * ad hoc solutions
+            * can your distributed database do a rolling upgrade?
+        1. security
+        1. cost
+        1. failure
+    1. Known problems:
+
+1. Solutions?
+
+## Questions
+
+1. How to deal with wide image on mobile?
+1. Make sure this doesn't come across too negative or preachy.
+1. Title? Relate to coupling? Or just poor abstraction.
+
+---
+
 Web applications are quickly becoming more complex, and are more and more being
 written in languages that compile to Javascript. With this, there is a
 proliferation of libraries and code that are intended to be run on both a
@@ -64,6 +95,8 @@ This sentence ends with a references [^1], and actually has another [^2].
 
 ![sync](/images/coupling.png)
 
+# Notes
+
 # References
 
 ## RPC
@@ -73,6 +106,27 @@ This sentence ends with a references [^1], and actually has another [^2].
     * The "continuation problem" (p. 16-17)
 1. [Implementing Remote Procedure Calls. 1984](http://www.cs.princeton.edu/courses/archive/fall03/cs518/papers/rpc.pdf)
 1. [Remote Procedure Call - Nelson, 1981](http://bitsavers.trailing-edge.com/pdf/xerox/parc/techReports/CSL-81-9_Remote_Procedure_Call.pdf)
+
+### Bad
+1. http://steve.vinoski.net/pdf/IEEE-Serendipitous_Reuse.pdf
+1. http://steve.vinoski.net/pdf/IEEE-Demystifying_RESTful_Data_Coupling.pdf
+1. http://steve.vinoski.net/pdf/IEEE-Convenience_Over_Correctness.pdf
+1. http://steve.vinoski.net/pdf/IEEE-RPC_Under_Fire.pdf
+1. http://www.win.tue.nl/~johanl/educ/2II45/2010/Lit/Tanenbaum%20RPC%2088.pdf
+
+## Distributed system
+1. http://queue.acm.org/detail.cfm?id=2482856
+
+## Code sharing examples
+
+1. [Meteor.js with Matt Debergalis](https://www.youtube.com/watch?v=vpp-8gkPWVE)
+1. [yesod-fay](https://hackage.haskell.org/package/yesod-fay)
+1. [fay happstack](http://happstack.com/page/view-page-slug/15/happstack-fay-acid-state-shared-datatypes-are-awesome)
+1. [clojurescript - shoreleave](https://github.com/ohpauleez/shoreleave)
+1. [clojurescript - hoplon](http://hoplon.io/#/home/)
+1. [node.js rpc](https://nodejsmodules.org/tags/rpc)
+1. [dnode - node.js](https://github.com/substack/dnode)
+1. [now.js](https://github.com/Flotype/now) (nowjs might be dead?)
 
 # References 2
 
