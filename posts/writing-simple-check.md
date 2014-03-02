@@ -96,7 +96,7 @@ a generator, using generator-combinators, you get shrinking 'for free'. That's
 because the notion of generating values and shrinking are tied together in
 these implementations. This is handy because it saves us from having to write
 boilerplate code to implement shrinking. Further, because it's not nearly as
-common to create our own types in Clojure, let along possible in Erlang, we
+common to create our own types in Clojure, let alone possible in Erlang, we
 don't want to have to create our own new type solely to implement some shrink
 protocol. As a result, even implicit constraints in our generator are respected
 during shrinking. For example, suppose we write a new generator which
