@@ -1,37 +1,44 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Writing Your First Chef Recipe</title>
-  <meta name="author" content="Reid Draper" />
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Writing Your First Chef Recipe</title>
+    <meta name="author" content="Reid Draper" />
 
-   <link href="http://feeds.feedburner.com/reiddraper" rel="alternate" title="Reid Draper" type="application/atom+xml" />
+    <link href="http://feeds.feedburner.com/reiddraper" rel="alternate" title="Reid Draper" type="application/atom+xml" />
 
-  <link rel="stylesheet" href="../css/site.css" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="../css/site.css" type="text/css" media="screen, projection" />
 
-  <script type="text/javascript" src="http://use.typekit.com/cpj3him.js"></script>
-  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-  <script type="text/javascript">
+    <link rel="stylesheet" href="https://use.typekit.net/cpj3him.css" />
+    <script type="text/javascript">
+      try {
+        Typekit.load();
+      } catch (e) {}
+    </script>
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(["_setAccount", "UA-15201954-3"]);
+      _gaq.push(["_trackPageview"]);
 
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-15201954-3']);
-    _gaq.push(['_trackPageview']);
+      (function () {
+        var ga = document.createElement("script");
+        ga.type = "text/javascript";
+        ga.async = true;
+        ga.src =
+          ("https:" == document.location.protocol
+            ? "https://ssl"
+            : "http://www") + ".google-analytics.com/ga.js";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <a id="site-title" href="../">reid draper</a>
 
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
-
-</head>
-<body>
-  <div class="container">
-    <a id="site-title" href="../">reid draper</a>
-
-    <article class="content">
-    <h1>Writing Your First Chef Recipe</h1>
+      <article class="content"><h1>Writing Your First Chef Recipe</h1>
 <h3>Apr 18, 2011</h3>
 <p><a href="http://www.opscode.com/chef/" title="Opscode Chef">Chef</a> is an infrastructure automation tool that lets you write Ruby code to describe how your machines should be set up. Applications for Chef vary from configuring complicated multi-node applications, to <a href="http://jtimberman.posterous.com/managing-my-workstations-with-chef">setting up your personal workstation</a>.</p>
 <p>As great as Chef is, getting started can be a bit daunting. It’s worse if you’re not sure exactly what Chef provides, and you’ve never written a lick of Ruby. This was me a few days ago, so I thought I’d write a quick Chef introduction from that perspective. In this tutorial, we’ll be creating a Chef recipe for the popular database <a href="http://redis.io/" title="Redis">Redis</a>.</p>
@@ -200,19 +207,17 @@ $ exit</code></pre>
 <p class="twitter_follow">If you like this post, you should follow me on
   <a href="http://twitter.com/reiddraper">twitter.</a>
 </p>
+</article>
 
-    </article>
-
-    <div id="footer">
-      <span id="twitter">
-       <a href="http://twitter.com/reiddraper">@reiddraper</a>
-      </span>
-      |
-      <span id="github">
-        <a href="https://github.com/reiddraper">github</a>
-      </span>
+      <div id="footer">
+        <span id="twitter">
+          <a href="http://twitter.com/reiddraper">@reiddraper</a>
+        </span>
+        |
+        <span id="github">
+          <a href="https://github.com/reiddraper">github</a>
+        </span>
+      </div>
     </div>
-  </div>
-
-</body>
+  </body>
 </html>
