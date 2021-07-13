@@ -1,37 +1,44 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Writing simple-check</title>
-  <meta name="author" content="Reid Draper" />
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Writing simple-check</title>
+    <meta name="author" content="Reid Draper" />
 
-   <link href="http://feeds.feedburner.com/reiddraper" rel="alternate" title="Reid Draper" type="application/atom+xml" />
+    <link href="http://feeds.feedburner.com/reiddraper" rel="alternate" title="Reid Draper" type="application/atom+xml" />
 
-  <link rel="stylesheet" href="../css/site.css" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="../css/site.css" type="text/css" media="screen, projection" />
 
-  <script type="text/javascript" src="http://use.typekit.com/cpj3him.js"></script>
-  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-  <script type="text/javascript">
+    <link rel="stylesheet" href="https://use.typekit.net/cpj3him.css" />
+    <script type="text/javascript">
+      try {
+        Typekit.load();
+      } catch (e) {}
+    </script>
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(["_setAccount", "UA-15201954-3"]);
+      _gaq.push(["_trackPageview"]);
 
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-15201954-3']);
-    _gaq.push(['_trackPageview']);
+      (function () {
+        var ga = document.createElement("script");
+        ga.type = "text/javascript";
+        ga.async = true;
+        ga.src =
+          ("https:" == document.location.protocol
+            ? "https://ssl"
+            : "http://www") + ".google-analytics.com/ga.js";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <a id="site-title" href="../">reid draper</a>
 
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
-
-</head>
-<body>
-  <div class="container">
-    <a id="site-title" href="../">reid draper</a>
-
-    <article class="content">
-    <h1>Writing simple-check</h1>
+      <article class="content"><h1>Writing simple-check</h1>
 <h3>Nov  3, 2013</h3>
 <p>For the past several months I’ve been working on a <a href="http://en.wikipedia.org/wiki/QuickCheck">QuickCheck</a> (QC) library for Clojure: <a href="https://github.com/reiddraper/simple-check">simple-check</a>. In this post, we’ll look at three issues I ran into porting QC from Haskell to Clojure: typing, shrinking, and laziness. This will not act as an introduction to QC, or property-based testing. Further, this post assumes some familiarity with Haskell and Clojure.</p>
 <h2 id="typing">Typing</h2>
@@ -84,19 +91,17 @@
 <p class="twitter_follow">If you like this post, you should follow me on
   <a href="http://twitter.com/reiddraper">twitter.</a>
 </p>
+</article>
 
-    </article>
-
-    <div id="footer">
-      <span id="twitter">
-       <a href="http://twitter.com/reiddraper">@reiddraper</a>
-      </span>
-      |
-      <span id="github">
-        <a href="https://github.com/reiddraper">github</a>
-      </span>
+      <div id="footer">
+        <span id="twitter">
+          <a href="http://twitter.com/reiddraper">@reiddraper</a>
+        </span>
+        |
+        <span id="github">
+          <a href="https://github.com/reiddraper">github</a>
+        </span>
+      </div>
     </div>
-  </div>
-
-</body>
+  </body>
 </html>
