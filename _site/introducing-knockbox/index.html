@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introducing Knockbox</title>
+  <meta name="author" content="Reid Draper" />
+
+   <link href="http://feeds.feedburner.com/reiddraper" rel="alternate" title="Reid Draper" type="application/atom+xml" />
+
+  <link rel="stylesheet" href="../css/site.css" type="text/css" media="screen, projection" />
+
+  <script type="text/javascript" src="http://use.typekit.com/cpj3him.js"></script>
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+  <script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-15201954-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+</head>
+<body>
+  <div class="container">
+    <a id="site-title" href="../">reid draper</a>
+
+    <article class="content">
+    <h1>Introducing Knockbox</h1>
+<h3>Dec 10, 2011</h3>
+<p>For the past few weeks I’ve been working on a Clojure library called <a href="https://github.com/reiddraper/knockbox">knockbox</a>. It’s a library meant to make dealing with conflict-resolution in eventually-consistent databases easier. If you’re not familiar with eventual-consistency, I’d suggest <a href="http://www.allthingsdistributed.com/2008/12/eventually_consistent.html">this</a> article by Amazon CTO Werner Vogels.</p>
+<p>Distributed databases like <a href="https://github.com/basho/riak">Riak</a> let you trade consistency for availability. This means that at any given moment, all of the replicas of your data might not be synchronized. In exchange for this, your database cluster can still operate when all but one replica of your data is unavailable. Amazon’s shopping-cart session state has been the iconic example. In their case, a write to add an item to your cart may go to a replica that is not up to date. At some point, the database notices that the replicas are in conflict, and you must resolve them. But how do you do this? If a coffee maker is in one replica and not the other, what happened? Was the coffee maker recently added and that just hasn’t been reflected in the other replica yet? Or was the coffee maker recently deleted? It turns out that you often have to change the way you represent your data in order to preserve the original intentions.</p>
+<p>Developers who wanted to implement data-types with conflict-resolution semantics have had to figure it out themselves, or read academic papers like <a href="http://hal.archives-ouvertes.fr/inria-00555588/">A comprehensive study of Convergent and Commutative Replicated Data Types</a>. <a href="https://github.com/mochi/statebox">statebox</a> was the first popular open source project to help ease the burden for developers wanting to take advantage of eventual-consistency. As I’ve been learning Clojure recently, I thought I’d try my hand at putting together a similar library.</p>
+<p>The main goal has been to have the types conform to all appropriate Clojure Protocols and Java interfaces. This means my last-write-wins set should quack like a normal Clojure set. This lets you reuse existing code that expects normal Clojure data types. Next, I’ve defined a <code>Resolvable</code> Protocol for all of these types to implement. There’s only a single method, which looks like:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>(<span class="kw">resolve</span> [a b])</span></code></pre></div>
+<p>This function should take two conflicing objects and return a new, resolved object.</p>
+<p>Resolving a list of replicas (often called siblings when they’re in conflict) is as simple as providing the <code>resolve</code> function to <code>reduce</code>. This is, however, provided for you, as <code>knockbox.core/resolve</code>. Note that this function is in a different namespace than the <code>resolve</code> that you implement as part of the <code>Resolvable</code> Protocol (this lives in <code>knockbox.resolvable</code>).</p>
+<p>There are currently two data-types implemented, sets and registers. A register is simply a container for another type. I also intend to implement counters, but have yet to come up with an implementation that has space-efficiency and pruning characteristics that I like.</p>
+<p>Let’s now create some conflicting replicas, and see see how they get resolved. Here we’ll use a last-write-wins (<code>lww</code>) set. The resolution semantics used here are to use timestamps to resolve an add/delete conflict for a particular item. This is not the same as using timestamps for the whole set, because we’re doing it per item. To get a REPL with the correct classpath, you can either add <code>[knockbox "0.0.1-SNAPSHOT"]</code> to your <code>project.clj</code>, or clone the knockbox repository and type <code>lein repl</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>(<span class="kw">require</span> <span class="at">'knockbox.core</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>(<span class="kw">require</span> '[knockbox.sets <span class="at">:as</span> kbsets])</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>(<span class="bu">def</span><span class="fu"> original </span>(<span class="kw">into</span> (kbsets/lww) #{<span class="at">:mug</span> <span class="at">:kettle</span>}))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>(<span class="bu">def</span><span class="fu"> a </span>(<span class="kw">disj</span> original <span class="at">:kettle</span>))</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a>(<span class="bu">def</span><span class="fu"> b </span>(<span class="kw">conj</span> original <span class="at">:coffee</span>))</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a>(<span class="bu">def</span><span class="fu"> c </span>(<span class="kw">conj</span> original <span class="at">:coffee-roaster</span>))</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a><span class="co">;; this one wins because its</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true"></a><span class="co">;; timestamp is later</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true"></a>(<span class="bu">def</span><span class="fu"> d </span>(<span class="kw">disj</span> original <span class="at">:coffee-roaster</span>))</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true"></a>(<span class="kw">println</span> (knockbox.core/resolve [a b c d]))</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true"></a><span class="co">; =&gt; #{:coffee :mug}</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true"></a><span class="co">;; notice that this is different</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true"></a><span class="co">;; than simply taking the union of</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true"></a><span class="co">;; the four sets</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true"></a>(<span class="kw">println</span> (clojure.set/union a b c d))</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true"></a><span class="co">; =&gt; #{:coffee :coffee-roaster :kettle :mug}</span></span></code></pre></div>
+<p>Using timestamps is fine for some domains, but what if our update-rate is high enough that we can’t trust our clocks to be synchronized enough? The <code>observed-remove</code> set works by assigning a UUID to each addition. Deletes will then override any UUIDs they have seen for a particular item in the set. This means that when add/delete conflicts happen, addition will win because the delete action couldn’t have seen the UUID created by the addition. Let’s see this in action.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>(<span class="kw">require</span> <span class="at">'knockbox.core</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a>(<span class="kw">require</span> '[knockbox.sets <span class="at">:as</span> kbsets])</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a>(<span class="bu">def</span><span class="fu"> original </span>(<span class="kw">into</span> (kbsets/observed-remove) #{<span class="at">:gin</span> <span class="at">:rum</span>}))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a>(<span class="bu">def</span><span class="fu"> a </span>(<span class="kw">conj</span> original <span class="at">:vodka</span>))</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a>(<span class="bu">def</span><span class="fu"> b </span>(<span class="kw">conj</span> original <span class="at">:vodka</span>))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a><span class="co">;; we've only seen the addition</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a><span class="co">;; of :vodka from a, not b</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a>(<span class="bu">def</span><span class="fu"> c </span>(<span class="kw">disj</span> a <span class="at">:vodka</span>))</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a><span class="co">;; don't include a in here because</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a><span class="co">;; vector clocks will take care of</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a><span class="co">;; figuring out that c supersedes it</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true"></a>(<span class="kw">println</span> (knockbox.core/resolve [b c]))</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true"></a><span class="co">; =&gt; #{:vodka :gin :rum}</span></span></code></pre></div>
+<p>That’s all for this first post, so go ahead and take a look at <a href="https://github.com/reiddraper/knockbox">knockbox on github</a>.</p>
+<p class="twitter_follow">If you like this post, you should follow me on
+  <a href="http://twitter.com/reiddraper">twitter.</a>
+</p>
+
+    </article>
+
+    <div id="footer">
+      <span id="twitter">
+       <a href="http://twitter.com/reiddraper">@reiddraper</a>
+      </span>
+      |
+      <span id="github">
+        <a href="https://github.com/reiddraper">github</a>
+      </span>
+    </div>
+  </div>
+
+</body>
+</html>
