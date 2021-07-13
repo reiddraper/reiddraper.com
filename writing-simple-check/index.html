@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Writing simple-check</title>
+  <meta name="author" content="Reid Draper" />
+
+   <link href="http://feeds.feedburner.com/reiddraper" rel="alternate" title="Reid Draper" type="application/atom+xml" />
+
+  <link rel="stylesheet" href="../css/site.css" type="text/css" media="screen, projection" />
+
+  <script type="text/javascript" src="http://use.typekit.com/cpj3him.js"></script>
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+  <script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-15201954-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+</head>
+<body>
+  <div class="container">
+    <a id="site-title" href="../">reid draper</a>
+
+    <article class="content">
+    <h1>Writing simple-check</h1>
+<h3>Nov  3, 2013</h3>
+<p>For the past several months I’ve been working on a <a href="http://en.wikipedia.org/wiki/QuickCheck">QuickCheck</a> (QC) library for Clojure: <a href="https://github.com/reiddraper/simple-check">simple-check</a>. In this post, we’ll look at three issues I ran into porting QC from Haskell to Clojure: typing, shrinking, and laziness. This will not act as an introduction to QC, or property-based testing. Further, this post assumes some familiarity with Haskell and Clojure.</p>
+<h2 id="typing">Typing</h2>
+<p>One of the major differences between writing a QC in a statically-typed language and a dynamically-typed language is that with static-types, we get to use that information to inform QC of the generators to use to test our function. For example, if our function has the type <code>[Int] -&gt; Bool</code>, Haskell QC will use this information to generate <code>[Int]</code>s. Furthermore, this takes advantage of the fact the we can be polymorphic on <em>return</em> type in Haskell. The <code>Arbitrary</code> type class in Haskell has a function, <code>arbitrary</code>, whose signature is <code>Gen a</code>. This allows the compiler to fill in the specialized version of <code>Gen a</code> for us, depending on context. In Clojure, we can only use type-based dispatch on an <em>argument</em>, not the return value. So, in dynamically-typed languages, we resort to explicitly specifying the generators to use for our test. Let’s see a concrete example:</p>
+<p>In Haskell:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="ot">sortIdempotent ::</span> [<span class="dt">Int</span>] <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>sortIdempotent xs <span class="ot">=</span> (<span class="fu">sort</span> xs) <span class="op">==</span> (<span class="fu">sort</span> (<span class="fu">sort</span> xs))</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>quickCheck sortIdempotent</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="co">-- +++ OK, passed 100 tests.</span></span></code></pre></div>
+<p>In Clojure:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>(<span class="bu">defn</span><span class="fu"> sort-idempotent?</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>  [coll]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>  (<span class="kw">=</span> (<span class="kw">sort</span> coll) (<span class="kw">sort</span> (<span class="kw">sort</span> coll))))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>(sc/quick-check <span class="dv">100</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>  (prop/for-all [coll (gen/vector gen/int)]</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a>    (sort-idempotent? coll)))</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a><span class="co">;; {:result true, :num-tests 100, :seed 1383433754854}</span></span></code></pre></div>
+<p>In Erlang (also dynamically typed), using <a href="http://www.quviq.com/index.html">Erlang QuickCheck (EQC)</a>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode erlang"><code class="sourceCode erlang"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="fu">sort_idempotent(</span><span class="va">Xs</span><span class="fu">)</span> <span class="op">-&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a>  <span class="fu">lists:sort(</span><span class="va">Xs</span><span class="fu">)</span> <span class="op">=:=</span> <span class="fu">lists:sort(lists:sort(</span><span class="va">Xs</span><span class="fu">)).</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="fu">prop_sort_idempotent()</span> <span class="op">-&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>    <span class="fu">?</span><span class="va">FORALL</span><span class="fu">(</span><span class="va">Xs</span><span class="fu">,</span> <span class="fu">list(int()),</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a>            <span class="fu">sort_idempotent(</span><span class="va">Xs</span><span class="fu">)).</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="fu">eqc:quickcheck(prop_sort_idempotent()).</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a><span class="co">%% OK, passed 100 tests</span></span></code></pre></div>
+<p>As you can see, with <strong>simple-check</strong> and Erlang QuickCheck, we have to explicitly provide the generator to use to test our function.</p>
+<h2 id="shrinking">Shrinking</h2>
+<p>Some QC implementations have a feature called shrinking. This allows failing tests to be shrunk to ‘smaller’ failing cases, where ‘smaller’ is data-type specific, something that’d be easier for the programmer to debug. For example, if your function fails with a randomly-generated 100-element list, QC will try and remove elements, as long as the test continues to fail. In Haskell QuickCheck, random element generation and shrinking are treated separately. That is, if you want your type to shrink, you have to implement that separately from generating random values of your type. Let’s see the type class where these two functions live, <code>Arbitrary</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="kw">class</span> <span class="dt">Arbitrary</span> a <span class="kw">where</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="ot">  arbitrary ::</span> <span class="dt">Gen</span> a</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>  <span class="co">-- the returned list is the first-level of the shrink tree</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a><span class="ot">  shrink ::</span> a <span class="ot">-&gt;</span> [a]</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a>  <span class="co">-- default implementation</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a>  shrink _ <span class="ot">=</span> []</span></code></pre></div>
+<p>Most (all?) of the standard Prelude types have an <code>Arbitrary</code> instance already written, but you’ll need to write one for your own types. Generally you’ll write your implementation of <code>arbitrary</code> based on the provided generator-combinators, like <code>choose</code>, <code>elements</code> and <code>oneof</code>. If you want your type to shrink, you’ll have to implement this on your own. Again, this is due to the fact that value generation and shrinking are treated separately. <em>simple-check</em> and Erlang QuickCheck take a different approach. When you write a generator, using generator-combinators, you get shrinking ‘for free’. That’s because the notion of generating values and shrinking are tied together in these implementations. This is handy because it saves us from having to write boilerplate code to implement shrinking. Further, because it’s not nearly as common to create our own types in Clojure, let alone possible in Erlang, we don’t want to have to create our own new type solely to implement some shrink protocol. As a result, even implicit constraints in our generator are respected during shrinking. For example, suppose we write a new generator which multiplies randomly generated integers by two. This will always result in an even number being generated, and this will remain true during shrinking. This works because in simple-check, instead of the arbitrary function generating random values, we generate random values, along with the shrink tree for that value. Erlang QuickCheck is proprietary, but I imagine it works similarly. Let’s imagine how this might look using Haskell’s types:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="co">-- a RoseTree is just an n-ary tree</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a><span class="kw">data</span> <span class="dt">RoseTree</span> a <span class="ot">=</span> <span class="dt">RoseTree</span> a [<span class="dt">RoseTree</span> a]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a><span class="kw">class</span> <span class="dt">Arbitrary</span> a <span class="kw">where</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a>  <span class="co">-- instead of generating an `a`, we generate a shrink tree of `a`</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a><span class="ot">  arbitrary ::</span> <span class="dt">Gen</span> (<span class="dt">RoseTree</span> a)</span></code></pre></div>
+<p>The top of the tree is a randomly generated value, and its children are the first level of shrinking. Generator-combinators can then manipulate this shrink tree. Because we now act on these shrink trees, we simply create larger trees as we create more complex generators. To give a concrete example, the expression <code>(fmap (partial * 2) gen/int)</code> will create a new generator based on <code>gen/int</code>, which multiplies the randomly generated elements by two. But since this function is also applied to the children in the shrink tree, every element in the shrink tree will be multiplied by two. We can also now write generator-combinators like <code>elements</code>, which creates a generator by choosing a random element from a list. This generator will shrink toward choosing earlier elements in the list. Were we to use <code>elements</code> in our <code>arbitrary</code> function in Haskell QC, we’d have to write the shrinking logic ourselves. It’s important to note, however, that this is specific to Haskell QC, and not the language itself, we could’ve implemented Haskell’s QC as described here.</p>
+<h2 id="laziness">Laziness</h2>
+<p>Haskell QuickCheck takes advantage of whole-program laziness. For example, when shrinking, instead of traversing a tree of arguments to the function under test, and applying to values to the function the tree is traversed, we’re able to use <code>fmap</code> to lazily apply to function to the entire tree. We then need only traverse a tree of booleans (representing test success or failure). This allows for a higher-level of abstraction. Fortunately, Clojure lets us mimic this, as long as our types are represented as lazy sequences. To represent a large tree, we use a two-element vector, where the first element is the top value in the tree, and the second element is a lazy sequence, representing the children. Using Clojure’s lazy functions like <code>map</code>, <code>filter</code> and <code>concat</code>, we’re able to retain this laziness as we process the tree. However, as this tree can become large when fully-evaluated, finding bugs can be difficult. In Haskell, we’re able to find type-mistakes during compilation, whereas in Clojure we need to run our program, potentially sifting through a large tree to find our bugs, which may have been introduced several call-sites away from where we’re looking. In order to combat this, I specifically debugged with values I knew had small shrink trees, and could be easily printed at the REPL.</p>
+<p class="twitter_follow">If you like this post, you should follow me on
+  <a href="http://twitter.com/reiddraper">twitter.</a>
+</p>
+
+    </article>
+
+    <div id="footer">
+      <span id="twitter">
+       <a href="http://twitter.com/reiddraper">@reiddraper</a>
+      </span>
+      |
+      <span id="github">
+        <a href="https://github.com/reiddraper">github</a>
+      </span>
+    </div>
+  </div>
+
+</body>
+</html>
