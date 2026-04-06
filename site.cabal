@@ -7,12 +7,12 @@ author:              Reid Draper
 maintainer:          reiddraper@gmail.com
 category:            Web
 build-type:          Simple
-cabal-version:       >=1.8
+cabal-version:       2.0
 
 executable site
   main-is:             site.hs
-  Ghc-options:         -Wall
+  Ghc-options:         -Wall -threaded
   build-depends:       base >=4.5.0,
-                       MissingH ==1.4.*,
-                       hakyll ==4.13.*,
-                       clay ==0.13.*
+                       MissingH >=1.6,
+                       hakyll >=4.15,
+                       clay >=0.14
